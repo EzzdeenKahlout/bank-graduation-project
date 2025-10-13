@@ -40,6 +40,10 @@ Route::middleware('auth')->group(function () {
             ->name('pay.merchant');
         Route::post('/pay-merchant', [TransactionController::class, 'payToMerchant']);
 
+        // API endpoint for fetching merchants with search
+        Route::get('/api/merchants', [TransactionController::class, 'getMerchants'])
+            ->name('api.merchants');
+
         Route::get('/history', [TransactionController::class, 'history'])
             ->name('transactions.history');
     });

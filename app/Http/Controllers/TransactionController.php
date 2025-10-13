@@ -82,8 +82,49 @@ class TransactionController extends Controller
 
     public function showPayToMerchant()
     {
-        $merchants = Merchant::where('is_verified', true)->get();
-        return view('transactions.pay-merchant', compact('merchants'));
+        return view('transactions.pay-merchant');
+    }
+
+    /**
+     * API endpoint to fetch merchants with search functionality
+     */
+    public function getMerchants(Request $request)
+    {
+        $search = $request->get('search', '');
+        $page = $request->get('page', 1);
+        $perPage = 10;
+
+        $query = Merchant::where('is_verified', true);
+
+        // البحث في اسم التاجر أو نوع العمل
+        if ($search) {
+            $query->where(function($q) use ($search) {
+                $q->where('name', 'LIKE', "%{$search}%")
+                  ->orWhere('business_type', 'LIKE', "%{$search}%")
+                  ->orWhere('merchant_id', 'LIKE', "%{$search}%");
+            });
+        }
+
+        $merchants = $query->orderBy('name')
+                          ->paginate($perPage, ['*'], 'page', $page);
+
+        // تنسيق البيانات لـ Select2
+        $results = $merchants->map(function($merchant) {
+            return [
+                'id' => $merchant->id,
+                'text' => $merchant->name . ' - ' . $merchant->business_type,
+                'name' => $merchant->name,
+                'business_type' => $merchant->business_type,
+                'merchant_id' => $merchant->merchant_id,
+            ];
+        });
+
+        return response()->json([
+            'results' => $results,
+            'pagination' => [
+                'more' => $merchants->hasMorePages()
+            ]
+        ]);
     }
 
     public function payToMerchant(Request $request)
@@ -147,4 +188,3 @@ class TransactionController extends Controller
         return view('transactions.history', compact('transactions'));
     }
 }
-

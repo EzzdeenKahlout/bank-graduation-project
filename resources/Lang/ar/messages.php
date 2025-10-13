@@ -249,4 +249,16 @@ return [
     'payment_notification' => 'تم الدفع :amount :currency لـ :merchant',
     'payment_successful' => 'تم الدفع بنجاح!',
     'payment_confirmation' => 'تأكيد الدفع',
+    'registration_success'=> 'تم التسجيل بنجاح  ',
+
+    // Loading and search
+    'loading' => 'جاري التحميل',
+    'searching' => 'جاري البحث',
+    'no_results' => 'لا توجد نتائج',
+// Time
+    'today' => 'اليوم',
+    'yesterday' => 'أمس',
+    'this_week' => 'هذا الأسبوع',
+    'this_month' => 'هذا الشهر',
+    'daily_spent_today' => 'المصروف اليومي',
 ];

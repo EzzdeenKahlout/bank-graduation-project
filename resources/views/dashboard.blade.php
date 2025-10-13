@@ -36,7 +36,7 @@
         <h3 style="margin-bottom: 1rem; color: #667eea;">{{ __('messages.daily_limit') }}</h3>
         <div style="margin-bottom: 1rem;">
             <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
-                <span>المصروف {{ __('messages.today') }}:</span>
+                <span> {{ __('messages.daily_spent_today') }}:</span>
                 <strong>{{ __('messages.currency_symbol') }}{{ number_format($user->daily_spent, 2) }}</strong>
             </div>
             <div style="background: #e0e0e0; height: 10px; border-radius: 5px; overflow: hidden;">
@@ -98,7 +98,7 @@
     @empty
         <p style="text-align: center; padding: 2rem; color: #666;">{{ __('messages.no_transactions') }} بعد</p>
     @endforelse
-    
+
     @if($recentTransactions->count() > 0)
         <div style="text-align: center; margin-top: 1rem;">
             <a href="{{ route('transactions.history') }}" class="btn btn-secondary">عرض جميع {{ __('messages.transactions') }}</a>

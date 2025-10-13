@@ -249,4 +249,16 @@ return [
     'payment_notification' => 'Paid :amount :currency to :merchant',
     'payment_successful' => 'Payment successful!',
     'payment_confirmation' => 'Payment confirmation!',
+        'registration_success'=> 'Registration success ',
+
+        // Loading and search
+    'loading' => 'Loading',
+    'searching' => 'Searching',
+    'no_results' => 'No results found',
+// Time
+    'today' => 'Today',
+    'yesterday' => 'Yesterday',
+    'this_week' => 'This Week',
+    'this_month' => 'This Month',
+    'daily_spent_today' => 'Spent Today',
 ];
