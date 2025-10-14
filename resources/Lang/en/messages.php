@@ -3,7 +3,8 @@
 return [
     'welcome' => 'Welcome',
     'home' => 'Home',
-    'dashboard' => 'Dashboard',
+    'dashboard' => 'Home',
+    'admin_panel' => 'Admin Panel',
     'logout' => 'Logout',
     'login' => 'Login',
     'register' => 'Register',

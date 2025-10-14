@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserRoleController;
+use App\Http\Controllers\AdminPanelController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
@@ -70,11 +71,30 @@ Route::middleware('auth')->group(function () {
             ->name('settings.daily-limit');
     });
 
-    Route::get('language/{locale}', [LanguageController::class, 'switch'])->name('language.switch');
-
     // مسارات الأدوار (Super Admin & Admin فقط)
 Route::middleware(['auth', 'permission:manage_roles'])->prefix('admin')->name('admin.')->group(function () {
+    // Dashboard
+    Route::get('/dashboard', [AdminPanelController::class, 'index'])->name('dashboard');
+
+    // إدارة الأدوار
     Route::resource('roles', RoleController::class);
+
+    // إدارة المستخدمين
+    Route::get('/users', [AdminPanelController::class, 'users'])->name('users');
+    Route::get('/users/{user}', [AdminPanelController::class, 'showUser'])->name('users.show');
+    Route::post('/users/{user}/balance', [AdminPanelController::class, 'updateBalance'])->name('users.balance');
+    Route::delete('/users/{user}', [AdminPanelController::class, 'deleteUser'])->name('users.delete');
+
+    // إدارة المعاملات
+    Route::get('/transactions', [AdminPanelController::class, 'transactions'])->name('transactions');
+
+    // إدارة البطاقات
+    Route::get('/cards', [AdminPanelController::class, 'cards'])->name('cards');
+    Route::post('/cards/{card}/approve', [AdminPanelController::class, 'approveCard'])->name('cards.approve');
+    Route::post('/cards/{card}/reject', [AdminPanelController::class, 'rejectCard'])->name('cards.reject');
+
+    // التقارير
+    Route::get('/reports', [AdminPanelController::class, 'reports'])->name('reports');
 });
 
 // مسارات إدارة أدوار المستخدمين
