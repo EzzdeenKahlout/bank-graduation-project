@@ -54,7 +54,11 @@ class RolesAndPermissionsSeeder extends Seeder
             // الإعدادات
             ['name' => 'manage_settings', 'display_name' => 'Manage Settings', 'description' => 'Can manage system settings', 'group' => 'settings'],
             ['name' => 'view_logs', 'display_name' => 'View Logs', 'description' => 'Can view system logs', 'group' => 'settings'],
-        ];
+        
+            ['name' => 'view_admin_dashboard', 'display_name' => 'View Admin Dashboard', 'description' => 'Can view admin dashboard', 'group' => 'admin'],
+            ['name' => 'view_admin_analytics', 'display_name' => 'View Admin Analytics', 'description' => 'Can view admin analytics', 'group' => 'admin'],
+            ['name' => 'view_admin_health', 'display_name' => 'View Admin Health', 'description' => 'Can view system health', 'group' => 'admin'],
+];
 
         foreach ($permissions as $permission) {
             Permission::firstOrCreate(

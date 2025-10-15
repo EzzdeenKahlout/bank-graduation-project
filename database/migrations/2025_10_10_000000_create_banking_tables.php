@@ -22,7 +22,7 @@ return new class extends Migration
     $table->boolean('notifications_enabled')->default(true)->after('is_active');
     $table->string('preferred_language')->default('ar')->after('notifications_enabled');
 });
-        
+
 
         Schema::create('cards', function (Blueprint $table) {
             $table->id();
@@ -75,14 +75,7 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        Schema::create('card_requests', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->enum('card_type', ['debit', 'credit']);
-            $table->enum('status', ['pending', 'approved', 'rejected'])->default('pending');
-            $table->text('reason')->nullable();
-            $table->timestamps();
-        });
+       
 
         Schema::create('qr_payments', function (Blueprint $table) {
             $table->id();

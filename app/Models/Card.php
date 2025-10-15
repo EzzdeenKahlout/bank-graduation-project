@@ -35,5 +35,18 @@ class Card extends Model
     public function canUse()
     {
         return $this->is_active && !$this->is_blocked && !$this->isExpired();
+}
+
+    
+    public function transactions()
+    {
+        // Transactions sent by the card owner
+        return $this->hasMany(\App\Models\Transaction::class, 'sender_id', 'user_id');
+    }
+
+    public function receivedTransactions()
+    {
+        // Transactions received by the card owner
+        return $this->hasMany(\App\Models\Transaction::class, 'receiver_id', 'user_id');
     }
 }

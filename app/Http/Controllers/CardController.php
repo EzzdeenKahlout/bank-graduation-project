@@ -29,6 +29,7 @@ class CardController extends Controller
         CardRequest::create([
             'user_id' => auth()->id(),
             'card_type' => $request->card_type,
+            'card_holder_name' => auth()->user()->name,
             'reason' => $request->reason,
             'status' => 'pending'
         ]);

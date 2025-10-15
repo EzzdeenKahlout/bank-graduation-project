@@ -1,440 +1,391 @@
-@extends('layouts.admin')
+@extends('layouts.app')
 
-@section('page-title', __('messages.admin_panel'))
-
-@section('content')
-
-<!-- Statistics Cards -->
-<div class="stats-grid">
-    <div class="stat-card">
-        <h4>
-            <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
-            </svg>
-            {{ __('messages.users') }}
-        </h4>
-        <div class="value">{{ $stats['total_users'] }}</div>
-        <small style="color: #28a745;">+{{ $stats['active_users'] }} {{ __('messages.this_week') }}</small>
-    </div>
-
-    <div class="stat-card">
-        <h4>
-            <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
-            </svg>
-            {{ __('messages.transactions') }}
-        </h4>
-        <div class="value">{{ $stats['total_transactions'] }}</div>
-        <small style="color: #28a745;">{{ $stats['today_transactions'] }} {{ __('messages.today') }}</small>
-    </div>
-
-    <div class="stat-card">
-        <h4>
-            <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/>
-            </svg>
-            {{ __('messages.my_cards') }}
-        </h4>
-        <div class="value">{{ $stats['total_cards'] }}</div>
-        <small style="color: #ffc107;">{{ $stats['pending_cards'] }} معلقة</small>
-    </div>
-
-    <div class="stat-card">
-        <h4>
-            <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-            </svg>
-            إجمالي الأرصدة
-        </h4>
-        <div class="value">{{ __('messages.currency_symbol') }}{{ number_format($stats['total_balance'], 0) }}</div>
-        <small style="color: #17a2b8;">{{ __('messages.currency_symbol') }}{{ number_format($stats['today_amount'], 0) }} {{ __('messages.today') }}</small>
-    </div>
-</div>
-
-<!-- Quick Actions -->
-<div class="card">
-    <div class="card-header">
-        <h3>
-            <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
-            </svg>
-            عمليات سريعة
-        </h3>
-    </div>
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
-        <a href="{{ route('admin.users') }}" class="btn btn-primary">
-            <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
-            </svg>
-            {{ __('messages.manage_users') }}
-        </a>
-
-        <a href="{{ route('admin.transactions') }}" class="btn btn-primary">
-            <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
-            </svg>
-            {{ __('messages.transactions') }}
-        </a>
-
-        <a href="{{ route('admin.cards') }}" class="btn btn-primary">
-            <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/>
-            </svg>
-            إدارة البطاقات
-        </a>
-
-        <a href="{{ route('admin.reports') }}" class="btn btn-primary">
-            <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
-            </svg>
-            {{ __('messages.reports') }}
-        </a>
-    </div>
-</div>
-
-<!-- Recent Users -->
-<div class="card">
-    <div class="card-header">
-        <h3>
-            <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
-            </svg>
-            أحدث المستخدمين
-        </h3>
-    </div>
-    <div class="table-responsive">
-        <table>
-            <thead>
-                <tr>
-                    <th>الاسم</th>
-                    <th>البريد الإلكتروني</th>
-                    <th>الرصيد</th>
-                    <th>تاريخ التسجيل</th>
-                    <th>الإجراءات</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach($stats['recent_users'] as $user)
-                <tr>
-                    <td>{{ $user->name }}</td>
-                    <td>{{ $user->email }}</td>
-                    <td>{{ __('messages.currency_symbol') }}{{ number_format($user->balance, 2) }}</td>
-                    <td>{{ $user->created_at->diffForHumans() }}</td>
-                    <td>
-                        <a href="{{ route('admin.users.show', $user) }}" class="btn btn-primary btn-sm">
-                            <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
-                            </svg>
-                            عرض
-                        </a>
-                    </td>
-                </tr>
-                @endforeach
-            </tbody>
-        </table>
-    </div>
-</div>
-
-<!-- Recent Transactions -->
-<div class="card">
-    <div class="card-header">
-        <h3>
-            <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
-            </svg>
-            أحدث المعاملات
-        </h3>
-    </div>
-    <div class="table-responsive">
-        <table>
-            <thead>
-                <tr>
-                    <th>من</th>
-                    <th>إلى</th>
-                    <th>المبلغ</th>
-                    <th>الوصف</th>
-                    <th>التاريخ</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach($stats['recent_transactions'] as $transaction)
-                <tr>
-                    <td>{{ $transaction->sender->name }}</td>
-                    <td>{{ $transaction->receiver ? $transaction->receiver->name : $transaction->merchant_name }}</td>
-                    <td style="color: #28a745; font-weight: bold;">{{ __('messages.currency_symbol') }}{{ number_format($transaction->amount, 2) }}</td>
-                    <td>{{ $transaction->description }}</td>
-                    <td>{{ $transaction->created_at->diffForHumans() }}</td>
-                </tr>
-                @endforeach
-            </tbody>
-        </table>
-    </div>
-</div>
-
-@endsection
-
-
-@section('title', __('messages.admin_panel'))
+@section('title', __('messages.admin_dashboard'))
 
 @section('content')
-<style>
-    .admin-header {
-        background: white;
-        border-radius: 15px;
-        padding: 2rem;
-        margin-bottom: 2rem;
-        box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-    }
-    .admin-header h1 {
-        color: #667eea;
-        margin-bottom: 0.5rem;
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-    }
-    .stats-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-        gap: 1.5rem;
-        margin-bottom: 2rem;
-    }
-    .stat-card {
-        background: white;
-        border-radius: 15px;
-        padding: 1.5rem;
-        box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-        transition: transform 0.3s ease;
-    }
-    .stat-card:hover {
-        transform: translateY(-5px);
-    }
-    .stat-card h3 {
-        color: #666;
-        font-size: 0.9rem;
-        margin-bottom: 0.5rem;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-    }
-    .stat-card .value {
-        font-size: 2rem;
-        font-weight: bold;
-        color: #667eea;
-    }
-    .stat-card.primary { border-left: 4px solid #667eea; }
-    .stat-card.success { border-left: 4px solid #28a745; }
-    .stat-card.warning { border-left: 4px solid #ffc107; }
-    .stat-card.danger { border-left: 4px solid #dc3545; }
-
-    .admin-section {
-        background: white;
-        border-radius: 15px;
-        padding: 2rem;
-        margin-bottom: 2rem;
-        box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-    }
-    .admin-section h2 {
-        color: #667eea;
-        margin-bottom: 1.5rem;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-    }
-    .admin-menu {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 1rem;
-    }
-    .admin-menu-item {
-        background: linear-gradient(135deg, #667eea, #764ba2);
-        color: white;
-        padding: 1.5rem;
-        border-radius: 10px;
-        text-decoration: none;
-        text-align: center;
-        transition: all 0.3s ease;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 0.5rem;
-    }
-    .admin-menu-item:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
-    }
-    .recent-item {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 1rem;
-        background: #f8f9fa;
-        border-radius: 8px;
-        margin-bottom: 0.5rem;
-    }
-    .icon-lg {
-        width: 32px;
-        height: 32px;
-    }
-</style>
-
-<div class="admin-header">
-    <h1>
-        <svg class="icon-lg" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-        </svg>
-        {{ __('messages.admin_panel') }}
-    </h1>
-    <p style="color: #666;">مرحباً {{ auth()->user()->name }}، هنا يمكنك إدارة النظام بالكامل</p>
-</div>
-
-<!-- Statistics Cards -->
-<div class="stats-grid">
-    <div class="stat-card primary">
-        <h3>
-            <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
-            </svg>
-            {{ __('messages.users') }}
-        </h3>
-        <div class="value">{{ $stats['total_users'] }}</div>
-    </div>
-
-    <div class="stat-card success">
-        <h3>
-            <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
-            </svg>
-            {{ __('messages.transactions') }}
-        </h3>
-        <div class="value">{{ $stats['total_transactions'] }}</div>
-    </div>
-
-    <div class="stat-card warning">
-        <h3>
-            <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/>
-            </svg>
-            {{ __('messages.my_cards') }}
-        </h3>
-        <div class="value">{{ $stats['total_cards'] }}</div>
-    </div>
-
-    <div class="stat-card danger">
-        <h3>
-            <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
-            </svg>
-            إجمالي الأرصدة
-        </h3>
-        <div class="value">{{ __('messages.currency_symbol') }}{{ number_format($stats['total_balance'], 0) }}</div>
-    </div>
-</div>
-
-<!-- Today's Stats -->
-<div class="admin-section">
-    <h2>
-        <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
-        </svg>
-        إحصائيات اليوم
-    </h2>
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
-        <div style="background: #f0f4ff; padding: 1.5rem; border-radius: 10px;">
-            <h4 style="color: #666; margin-bottom: 0.5rem;">معاملات اليوم</h4>
-            <p style="font-size: 1.8rem; font-weight: bold; color: #667eea;">{{ $stats['today_transactions'] }}</p>
-        </div>
-        <div style="background: #f0f4ff; padding: 1.5rem; border-radius: 10px;">
-            <h4 style="color: #666; margin-bottom: 0.5rem;">قيمة معاملات اليوم</h4>
-            <p style="font-size: 1.8rem; font-weight: bold; color: #667eea;">{{ __('messages.currency_symbol') }}{{ number_format($stats['today_amount'], 0) }}</p>
-        </div>
-    </div>
-</div>
-
-<!-- Admin Quick Actions -->
-<div class="admin-section">
-    <h2>
-        <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
-        </svg>
-        عمليات سريعة
-    </h2>
-    <div class="admin-menu">
-        <a href="{{ route('admin.roles.index') }}" class="admin-menu-item">
-            <svg class="icon-lg" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
-            </svg>
-            {{ __('messages.manage_roles') }}
-        </a>
-
-        <a href="{{ route('admin.users.index') }}" class="admin-menu-item">
-            <svg class="icon-lg" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
-            </svg>
-            {{ __('messages.manage_users') }}
-        </a>
-
-        <a href="{{ route('transactions.history') }}" class="admin-menu-item">
-            <svg class="icon-lg" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
-            </svg>
-            {{ __('messages.transactions') }}
-        </a>
-
-        <a href="{{ route('cards.index') }}" class="admin-menu-item">
-            <svg class="icon-lg" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/>
-            </svg>
-            إدارة البطاقات
-        </a>
-    </div>
-</div>
-
-<!-- Recent Users -->
-<div class="admin-section">
-    <h2>
-        <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/>
-        </svg>
-        أحدث المستخدمين
-    </h2>
-    @foreach($stats['recent_users'] as $user)
-        <div class="recent-item">
-            <div>
-                <strong>{{ $user->name }}</strong>
-                <div style="font-size: 0.9rem; color: #666;">{{ $user->email }}</div>
-            </div>
-            <div style="text-align: left;">
-                <div style="font-weight: bold; color: #667eea;">{{ __('messages.currency_symbol') }}{{ number_format($user->balance, 2) }}</div>
-                <div style="font-size: 0.9rem; color: #666;">{{ $user->created_at->diffForHumans() }}</div>
-            </div>
-        </div>
-    @endforeach
-</div>
-
-<!-- Recent Transactions -->
-<div class="admin-section">
-    <h2>
-        <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"/>
-        </svg>
-        أحدث المعاملات
-    </h2>
-    @foreach($stats['recent_transactions'] as $transaction)
-        <div class="recent-item">
-            <div>
-                <strong>
-                    {{ $transaction->sender->name }} → {{ $transaction->receiver ? $transaction->receiver->name : $transaction->merchant_name }}
-                </strong>
-                <div style="font-size: 0.9rem; color: #666;">
-                    {{ $transaction->description }} • {{ $transaction->created_at->diffForHumans() }}
+<div class="container-fluid py-4">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body p-3">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div class="d-flex align-items-center">
+                            <div class="icon icon-shape icon-lg bg-gradient-primary shadow text-center border-radius-md me-3">
+                                <i class="material-icons opacity-10">dashboard</i>
+                            </div>
+                            <div>
+                                <h5 class="mb-0">{{ __('messages.admin_dashboard') }}</h5>
+                                <p class="text-sm text-muted mb-0">{{ __('messages.welcome_admin', ['name' => auth()->user()->name]) }}</p>
+                            </div>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <button class="btn btn-outline-primary btn-sm" onclick="refreshDashboard()">
+                                <i class="material-icons text-sm">refresh</i>
+                                {{ __('messages.refresh') }}
+                            </button>
+@permission('view_admin_health')
+                            <a href="{{ route('admin.health') }}" class="btn btn-outline-info btn-sm">
+                                <i class="material-icons text-sm">monitor_heart</i>
+                                {{ __('messages.system_health') }}
+                            </a>
+@endpermission
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div style="font-size: 1.2rem; font-weight: bold; color: #28a745;">
-                {{ __('messages.currency_symbol') }}{{ number_format($transaction->amount, 2) }}
+        </div>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="row mb-4">
+        <!-- Total Users -->
+        <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
+            <div class="card">
+                <div class="card-body p-3">
+                    <div class="row">
+                        <div class="col-8">
+                            <div class="numbers">
+                                <p class="text-sm mb-0 text-uppercase font-weight-bold">{{ __('messages.total_users') }}</p>
+                                <h5 class="font-weight-bolder mb-0">
+                                    {{ number_format($stats['total_users']) }}
+                                    <span class="text-success text-sm font-weight-bolder">
+                                        +{{ $stats['active_users'] }} {{ __('messages.active') }}
+                                    </span>
+                                </h5>
+                            </div>
+                        </div>
+                        <div class="col-4 text-end">
+                            <div class="icon icon-shape bg-gradient-primary shadow-primary text-center rounded-circle">
+                                <i class="material-icons opacity-10">people</i>
+                            </div>
+                        </div>
+                    </div>
+                    <hr class="dark horizontal my-2">
+                    <div class="d-flex">
+                        <a href="{{ route('admin.users.index') }}" class="text-sm text-primary">{{ __('messages.view_all') }}</a>
+                    </div>
+                </div>
             </div>
         </div>
-    @endforeach
+
+        <!-- Total Cards -->
+        <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
+            <div class="card">
+                <div class="card-body p-3">
+                    <div class="row">
+                        <div class="col-8">
+                            <div class="numbers">
+                                <p class="text-sm mb-0 text-uppercase font-weight-bold">{{ __('messages.total_cards') }}</p>
+                                <h5 class="font-weight-bolder mb-0">
+                                    {{ number_format($stats['total_cards']) }}
+                                    <span class="text-success text-sm font-weight-bolder">
+                                        +{{ $stats['active_cards'] }} {{ __('messages.active') }}
+                                    </span>
+                                </h5>
+                            </div>
+                        </div>
+                        <div class="col-4 text-end">
+                            <div class="icon icon-shape bg-gradient-success shadow-success text-center rounded-circle">
+                                <i class="material-icons opacity-10">credit_card</i>
+                            </div>
+                        </div>
+                    </div>
+                    <hr class="dark horizontal my-2">
+                    <div class="d-flex">
+                        <a href="{{ route('admin.cards.index') }}" class="text-sm text-success">{{ __('messages.view_all') }}</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Total Transactions -->
+        <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
+            <div class="card">
+                <div class="card-body p-3">
+                    <div class="row">
+                        <div class="col-8">
+                            <div class="numbers">
+                                <p class="text-sm mb-0 text-uppercase font-weight-bold">{{ __('messages.transactions_today') }}</p>
+                                <h5 class="font-weight-bolder mb-0">
+                                    {{ number_format($stats['today_transactions']) }}
+                                    <span class="text-warning text-sm font-weight-bolder">
+                                        / {{ number_format($stats['total_transactions']) }}
+                                    </span>
+                                </h5>
+                            </div>
+                        </div>
+                        <div class="col-4 text-end">
+                            <div class="icon icon-shape bg-gradient-warning shadow-warning text-center rounded-circle">
+                                <i class="material-icons opacity-10">receipt_long</i>
+                            </div>
+                        </div>
+                    </div>
+                    <hr class="dark horizontal my-2">
+                    <div class="d-flex">
+                        <a href="{{ route('admin.transactions.index') }}" class="text-sm text-warning">{{ __('messages.view_all') }}</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Total Amount -->
+        <div class="col-xl-3 col-sm-6">
+            <div class="card">
+                <div class="card-body p-3">
+                    <div class="row">
+                        <div class="col-8">
+                            <div class="numbers">
+                                <p class="text-sm mb-0 text-uppercase font-weight-bold">{{ __('messages.amount_today') }}</p>
+                                <h5 class="font-weight-bolder mb-0">
+                                    ${{ number_format($stats['today_amount'], 2) }}
+                                    <span class="text-info text-sm font-weight-bolder">
+                                        / ${{ number_format($stats['total_transaction_amount'], 2) }}
+                                    </span>
+                                </h5>
+                            </div>
+                        </div>
+                        <div class="col-4 text-end">
+                            <div class="icon icon-shape bg-gradient-info shadow-info text-center rounded-circle">
+                                <i class="material-icons opacity-10">attach_money</i>
+                            </div>
+                        </div>
+                    </div>
+                    <hr class="dark horizontal my-2">
+                    <div class="d-flex">
+@permission('view_admin_analytics')
+                        <a href="{{ route('admin.transactions.index') }}" class="text-sm text-info">{{ __('messages.view_analytics') }}</a>
+@endpermission
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts Row -->
+    <div class="row mb-4">
+        <!-- Transaction Trends -->
+        <div class="col-lg-7 mb-lg-0 mb-4">
+            <div class="card h-100">
+                <div class="card-header pb-0 p-3">
+                    <div class="d-flex justify-content-between">
+                        <h6 class="mb-0">{{ __('messages.transaction_trends') }}</h6>
+                        <select class="form-select form-select-sm w-auto" onchange="updateCharts(this.value)">
+                            <option value="7days">{{ __('messages.last_7_days') }}</option>
+                            <option value="30days">{{ __('messages.last_30_days') }}</option>
+                            <option value="year">{{ __('messages.this_year') }}</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="card-body p-3">
+                    <canvas id="transactionTrendsChart" height="300"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Cards & Transactions Distribution -->
+        <div class="col-lg-5">
+            <div class="card h-100">
+                <div class="card-header pb-0 p-3">
+                    <h6 class="mb-0">{{ __('messages.distribution') }}</h6>
+                </div>
+                <div class="card-body p-3">
+                    <div class="mb-4">
+                        <h6 class="text-sm">{{ __('messages.cards_by_type') }}</h6>
+                        <canvas id="cardsByTypeChart" height="150"></canvas>
+                    </div>
+                    <div>
+                        <h6 class="text-sm">{{ __('messages.transactions_by_type') }}</h6>
+                        <canvas id="transactionsByTypeChart" height="150"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Transactions -->
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header pb-0 p-3">
+                    <div class="d-flex justify-content-between">
+                        <h6 class="mb-0">{{ __('messages.recent_transactions') }}</h6>
+                        <a href="{{ route('admin.transactions.index') }}" class="btn btn-sm btn-outline-primary">
+                            {{ __('messages.view_all') }}
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table align-items-center mb-0">
+                            <thead>
+                                <tr>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                        {{ __('messages.transaction') }}
+                                    </th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+                                        {{ __('messages.user') }}
+                                    </th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+                                        {{ __('messages.type') }}
+                                    </th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+                                        {{ __('messages.amount') }}
+                                    </th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+                                        {{ __('messages.status') }}
+                                    </th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+                                        {{ __('messages.date') }}
+                                    </th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @forelse($recentTransactions as $transaction)
+                                <tr>
+                                    <td>
+                                        <div class="d-flex px-2 py-1">
+                                            <div class="d-flex flex-column justify-content-center">
+                                                <h6 class="mb-0 text-sm">{{ $transaction->transaction_id }}</h6>
+                                                <p class="text-xs text-secondary mb-0">{{ Str::limit($transaction->description, 30) }}</p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <p class="text-xs font-weight-bold mb-0">{{ $transaction->user->name }}</p>
+                                        <p class="text-xs text-secondary mb-0">{{ $transaction->user->email }}</p>
+                                    </td>
+                                    <td>
+                                        <span class="badge badge-sm bg-gradient-{{ $transaction->type == 'credit' ? 'success' : 'warning' }}">
+                                            {{ ucfirst($transaction->type) }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <p class="text-xs font-weight-bold mb-0">${{ number_format($transaction->amount, 2) }}</p>
+                                    </td>
+                                    <td>
+                                        <span class="badge badge-sm bg-gradient-{{ $transaction->status == 'completed' ? 'success' : ($transaction->status == 'pending' ? 'warning' : 'danger') }}">
+                                            {{ ucfirst($transaction->status) }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="text-secondary text-xs font-weight-bold">
+                                            {{ $transaction->created_at->diffForHumans() }}
+                                        </span>
+                                    </td>
+                                    <td class="align-middle">
+                                        <a href="{{ route('admin.transactions.show', $transaction) }}"
+                                           class="text-secondary font-weight-bold text-xs"
+                                           data-toggle="tooltip"
+                                           title="{{ __('messages.view_details') }}">
+                                            <i class="material-icons text-sm">visibility</i>
+                                        </a>
+                                    </td>
+                                </tr>
+                                @empty
+                                <tr>
+                                    <td colspan="7" class="text-center py-4">
+                                        <i class="material-icons text-muted" style="font-size: 48px;">inbox</i>
+                                        <p class="text-muted">{{ __('messages.no_transactions_found') }}</p>
+                                    </td>
+                                </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
+@push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+// Transaction Trends Chart
+const trendsData = @json($transactionTrends);
+const trendsCtx = document.getElementById('transactionTrendsChart').getContext('2d');
+new Chart(trendsCtx, {
+    type: 'line',
+    data: {
+        labels: trendsData.map(item => item.date),
+        datasets: [{
+            label: '{{ __('messages.transactions') }}',
+            data: trendsData.map(item => item.count),
+            borderColor: 'rgb(75, 192, 192)',
+            tension: 0.1
+        }, {
+            label: '{{ __('messages.amount') }} ($)',
+            data: trendsData.map(item => item.total),
+            borderColor: 'rgb(255, 99, 132)',
+            tension: 0.1,
+            yAxisID: 'y1'
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+            y: {
+                type: 'linear',
+                position: 'left',
+            },
+            y1: {
+                type: 'linear',
+                position: 'right',
+                grid: {
+                    drawOnChartArea: false,
+                },
+            },
+        }
+    }
+});
+
+// Cards by Type Chart
+const cardsData = @json($cardsByType);
+const cardsCtx = document.getElementById('cardsByTypeChart').getContext('2d');
+new Chart(cardsCtx, {
+    type: 'doughnut',
+    data: {
+        labels: cardsData.map(item => item.card_type),
+        datasets: [{
+            data: cardsData.map(item => item.count),
+            backgroundColor: ['#36a2eb', '#ff6384']
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false
+    }
+});
+
+// Transactions by Type Chart
+const transData = @json($transactionsByType);
+const transCtx = document.getElementById('transactionsByTypeChart').getContext('2d');
+new Chart(transCtx, {
+    type: 'pie',
+    data: {
+        labels: transData.map(item => item.type),
+        datasets: [{
+            data: transData.map(item => item.count),
+            backgroundColor: ['#4bc0c0', '#ffcd56', '#ff6384']
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false
+    }
+});
+
+function refreshDashboard() {
+    location.reload();
+}
+
+function updateCharts(period) {
+    // Implement AJAX call to update charts
+    console.log('Updating charts for period:', period);
+}
+</script>
+@endpush
 @endsection

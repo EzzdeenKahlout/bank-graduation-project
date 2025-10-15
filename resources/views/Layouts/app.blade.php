@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="{{ app()->getLocale() }}" dir="{{ app()->getLocale() == 'ar' ? 'rtl' : 'ltr' }}">
 <head>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'البنك الرقمي')</title>
@@ -196,14 +198,14 @@
                     {{ __('messages.dashboard') }}
                 </a>
 
-                @can('manage_roles')
-                    <a href="{{ route('admin.roles.index') }}">
+                @permission('view_admin_dashboard')
+                    <a href="{{ route('admin.dashboard') }}">
                         <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
                         </svg>
                         {{ __('messages.admin_panel') }}
                     </a>
-                @endcan
+                @endpermission
 
                 <a href="{{ route('cards.index') }}">
                     <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -288,5 +290,6 @@
             }
         }
     </script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

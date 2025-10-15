@@ -16,27 +16,43 @@ trait HasRolesAndPermissions
     }
 
     /**
+     * العلاقة مع الصلاحيات (مباشرة للمستخدم)
+     */
+    public function permissions()
+    {
+        return $this->belongsToMany(\App\Models\Permission::class, 'permission_user');
+    }
+
+    /**
      * إعطاء دور للمستخدم
      */
     public function assignRole($role)
     {
         if (is_string($role)) {
-            $role = Role::whereName($role)->firstOrFail();
+            $role = Role::where('name', $role)->first();
         }
-        
-        return $this->roles()->syncWithoutDetaching($role);
+
+        if ($role instanceof Role) {
+            $this->roles()->syncWithoutDetaching([$role->id]);
+        }
+
+        return $this;
     }
 
     /**
-     * سحب دور من المستخدم
+     * إزالة دور من المستخدم
      */
     public function removeRole($role)
     {
         if (is_string($role)) {
-            $role = Role::whereName($role)->firstOrFail();
+            $role = Role::where('name', $role)->first();
         }
-        
-        return $this->roles()->detach($role);
+
+        if ($role instanceof Role) {
+            $this->roles()->detach($role->id);
+        }
+
+        return $this;
     }
 
     /**
@@ -47,7 +63,7 @@ trait HasRolesAndPermissions
         if (is_string($role)) {
             return $this->roles->contains('name', $role);
         }
-        
+
         if (is_array($role)) {
             foreach ($role as $r) {
                 if ($this->hasRole($r)) {
@@ -56,7 +72,7 @@ trait HasRolesAndPermissions
             }
             return false;
         }
-        
+
         return $this->roles->contains($role);
     }
 
@@ -68,32 +84,33 @@ trait HasRolesAndPermissions
         if (is_string($roles)) {
             return $this->hasRole($roles);
         }
-        
+
         foreach ($roles as $role) {
             if (!$this->hasRole($role)) {
                 return false;
             }
         }
-        
+
         return true;
     }
 
     /**
-     * التحقق من وجود صلاحية
+     * التحقق من وجود صلاحية (مباشرة أو عبر الأدوار)
      */
     public function hasPermission($permission)
     {
-        // Super Admin له كل الصلاحيات
-        if ($this->hasRole('super_admin')) {
+        // Direct permission
+        if ($this->permissions()->where('name', $permission)->exists()) {
             return true;
         }
-        
+
+        // Via roles
         foreach ($this->roles as $role) {
-            if ($role->hasPermission($permission)) {
+            if ($role->permissions()->where('name', $permission)->exists()) {
                 return true;
             }
         }
-        
+
         return false;
     }
 
@@ -105,13 +122,13 @@ trait HasRolesAndPermissions
         if (is_string($permissions)) {
             return $this->hasPermission($permissions);
         }
-        
+
         foreach ($permissions as $permission) {
             if ($this->hasPermission($permission)) {
                 return true;
             }
         }
-        
+
         return false;
     }
 
@@ -123,28 +140,24 @@ trait HasRolesAndPermissions
         if (is_string($permissions)) {
             return $this->hasPermission($permissions);
         }
-        
+
         foreach ($permissions as $permission) {
             if (!$this->hasPermission($permission)) {
                 return false;
             }
         }
-        
+
         return true;
     }
 
     /**
-     * الحصول على كل الصلاحيات
+     * الحصول على كل الصلاحيات (مباشرة + عبر الأدوار) بشكل فريد
      */
     public function getAllPermissions()
     {
-        $permissions = collect();
-        
-        foreach ($this->roles as $role) {
-            $permissions = $permissions->merge($role->permissions);
-        }
-        
-        return $permissions->unique('id');
+        $direct = $this->permissions()->get();
+        $viaRoles = $this->roles()->with('permissions')->get()->pluck('permissions')->flatten();
+        return $direct->merge($viaRoles)->unique('id')->values();
     }
 
     /**
