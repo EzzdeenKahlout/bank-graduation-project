@@ -21,7 +21,7 @@ class CardManagementController extends Controller
         }
 
         $query = Card::with('user');
-
+        
         // Search
         if ($request->has('search')) {
             $search = $request->search;

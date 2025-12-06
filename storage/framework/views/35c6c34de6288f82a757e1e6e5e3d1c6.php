@@ -1,8 +1,6 @@
-@extends('layouts.app')
+<?php $__env->startSection('title', __('messages.admin_dashboard')); ?>
 
-@section('title', __('messages.admin_dashboard'))
-
-@section('content')
+<?php $__env->startSection('content'); ?>
 <div class="container-fluid py-4">
     <!-- Header -->
     <div class="row mb-4">
@@ -15,21 +13,23 @@
                                 <i class="material-icons opacity-10">dashboard</i>
                             </div>
                             <div>
-                                <h5 class="mb-0">{{ __('messages.admin_dashboard') }}</h5>
-                                <p class="text-sm text-muted mb-0">{{ __('messages.welcome_admin', ['name' => auth()->user()->name]) }}</p>
+                                <h5 class="mb-0"><?php echo e(__('messages.admin_dashboard')); ?></h5>
+                                <p class="text-sm text-muted mb-0"><?php echo e(__('messages.welcome_admin', ['name' => auth()->user()->name])); ?></p>
                             </div>
                         </div>
                         <div class="d-flex gap-2">
                             <button class="btn btn-outline-primary btn-sm" onclick="refreshDashboard()">
                                 <i class="material-icons text-sm">refresh</i>
-                                {{ __('messages.refresh') }}
+                                <?php echo e(__('messages.refresh')); ?>
+
                             </button>
-@permission('view_admin_health')
-                            <a href="{{ route('admin.health') }}" class="btn btn-outline-info btn-sm">
+<?php if (\Illuminate\Support\Facades\Blade::check('permission', 'view_admin_health')): ?>
+                            <a href="<?php echo e(route('admin.health')); ?>" class="btn btn-outline-info btn-sm">
                                 <i class="material-icons text-sm">monitor_heart</i>
-                                {{ __('messages.system_health') }}
+                                <?php echo e(__('messages.system_health')); ?>
+
                             </a>
-@endpermission
+<?php endif; ?>
                         </div>
                     </div>
                 </div>
@@ -46,11 +46,13 @@
                     <div class="row">
                         <div class="col-8">
                             <div class="numbers">
-                                <p class="text-sm mb-0 text-uppercase font-weight-bold">{{ __('messages.total_users') }}</p>
+                                <p class="text-sm mb-0 text-uppercase font-weight-bold"><?php echo e(__('messages.total_users')); ?></p>
                                 <h5 class="font-weight-bolder mb-0">
-                                    {{ number_format($stats['total_users']) }}
+                                    <?php echo e(number_format($stats['total_users'])); ?>
+
                                     <span class="text-success text-sm font-weight-bolder">
-                                        +{{ $stats['active_users'] }} {{ __('messages.active') }}
+                                        +<?php echo e($stats['active_users']); ?> <?php echo e(__('messages.active')); ?>
+
                                     </span>
                                 </h5>
                             </div>
@@ -63,7 +65,7 @@
                     </div>
                     <hr class="dark horizontal my-2">
                     <div class="d-flex">
-                        <a href="{{ route('admin.users.index') }}" class="text-sm text-primary">{{ __('messages.view_all') }}</a>
+                        <a href="<?php echo e(route('admin.users.index')); ?>" class="text-sm text-primary"><?php echo e(__('messages.view_all')); ?></a>
                     </div>
                 </div>
             </div>
@@ -76,11 +78,13 @@
                     <div class="row">
                         <div class="col-8">
                             <div class="numbers">
-                                <p class="text-sm mb-0 text-uppercase font-weight-bold">{{ __('messages.total_cards') }}</p>
+                                <p class="text-sm mb-0 text-uppercase font-weight-bold"><?php echo e(__('messages.total_cards')); ?></p>
                                 <h5 class="font-weight-bolder mb-0">
-                                    {{ number_format($stats['total_cards']) }}
+                                    <?php echo e(number_format($stats['total_cards'])); ?>
+
                                     <span class="text-success text-sm font-weight-bolder">
-                                        +{{ $stats['active_cards'] }} {{ __('messages.active') }}
+                                        +<?php echo e($stats['active_cards']); ?> <?php echo e(__('messages.active')); ?>
+
                                     </span>
                                 </h5>
                             </div>
@@ -93,7 +97,7 @@
                     </div>
                     <hr class="dark horizontal my-2">
                     <div class="d-flex">
-                        <a href="{{ route('admin.cards.index') }}" class="text-sm text-success">{{ __('messages.view_all') }}</a>
+                        <a href="<?php echo e(route('admin.cards.index')); ?>" class="text-sm text-success"><?php echo e(__('messages.view_all')); ?></a>
                     </div>
                 </div>
             </div>
@@ -106,9 +110,10 @@
                     <div class="row">
                         <div class="col-8">
                             <div class="numbers">
-                                <p class="text-sm mb-0 text-uppercase font-weight-bold">{{ __('messages.total_roles') }}</p>
+                                <p class="text-sm mb-0 text-uppercase font-weight-bold"><?php echo e(__('messages.total_roles')); ?></p>
                                 <h5 class="font-weight-bolder mb-0">
-                                    {{ number_format($stats['total_roles']) }}
+                                    <?php echo e(number_format($stats['total_roles'])); ?>
+
 
                                 </h5>
                             </div>
@@ -121,7 +126,7 @@
                     </div>
                     <hr class="dark horizontal my-2">
                     <div class="d-flex">
-                        <a href="{{ route('admin.roles.index') }}" class="text-sm text-success">{{ __('messages.view_all') }}</a>
+                        <a href="<?php echo e(route('admin.roles.index')); ?>" class="text-sm text-success"><?php echo e(__('messages.view_all')); ?></a>
                     </div>
                 </div>
             </div>
@@ -134,11 +139,13 @@
                     <div class="row">
                         <div class="col-8">
                             <div class="numbers">
-                                <p class="text-sm mb-0 text-uppercase font-weight-bold">{{ __('messages.transactions_today') }}</p>
+                                <p class="text-sm mb-0 text-uppercase font-weight-bold"><?php echo e(__('messages.transactions_today')); ?></p>
                                 <h5 class="font-weight-bolder mb-0">
-                                    {{ number_format($stats['today_transactions']) }}
+                                    <?php echo e(number_format($stats['today_transactions'])); ?>
+
                                     <span class="text-warning text-sm font-weight-bolder">
-                                        / {{ number_format($stats['total_transactions']) }}
+                                        / <?php echo e(number_format($stats['total_transactions'])); ?>
+
                                     </span>
                                 </h5>
                             </div>
@@ -151,7 +158,7 @@
                     </div>
                     <hr class="dark horizontal my-2">
                     <div class="d-flex">
-                        <a href="{{ route('admin.transactions.index') }}" class="text-sm text-warning">{{ __('messages.view_all') }}</a>
+                        <a href="<?php echo e(route('admin.transactions.index')); ?>" class="text-sm text-warning"><?php echo e(__('messages.view_all')); ?></a>
                     </div>
                 </div>
             </div>
@@ -164,11 +171,13 @@
                     <div class="row">
                         <div class="col-8">
                             <div class="numbers">
-                                <p class="text-sm mb-0 text-uppercase font-weight-bold">{{ __('messages.amount_today') }}</p>
+                                <p class="text-sm mb-0 text-uppercase font-weight-bold"><?php echo e(__('messages.amount_today')); ?></p>
                                 <h5 class="font-weight-bolder mb-0">
-                                    ${{ number_format($stats['today_amount'], 2) }}
+                                    $<?php echo e(number_format($stats['today_amount'], 2)); ?>
+
                                     <span class="text-info text-sm font-weight-bolder">
-                                        / ${{ number_format($stats['total_transaction_amount'], 2) }}
+                                        / $<?php echo e(number_format($stats['total_transaction_amount'], 2)); ?>
+
                                     </span>
                                 </h5>
                             </div>
@@ -181,9 +190,9 @@
                     </div>
                     <hr class="dark horizontal my-2">
                     <div class="d-flex">
-@permission('view_admin_analytics')
-                        <a href="{{ route('admin.transactions.index') }}" class="text-sm text-info">{{ __('messages.view_analytics') }}</a>
-@endpermission
+<?php if (\Illuminate\Support\Facades\Blade::check('permission', 'view_admin_analytics')): ?>
+                        <a href="<?php echo e(route('admin.transactions.index')); ?>" class="text-sm text-info"><?php echo e(__('messages.view_analytics')); ?></a>
+<?php endif; ?>
                     </div>
                 </div>
             </div>
@@ -197,11 +206,11 @@
             <div class="card h-100">
                 <div class="card-header pb-0 p-3">
                     <div class="d-flex justify-content-between">
-                        <h6 class="mb-0">{{ __('messages.transaction_trends') }}</h6>
+                        <h6 class="mb-0"><?php echo e(__('messages.transaction_trends')); ?></h6>
                         <select class="form-select form-select-sm w-auto" onchange="updateCharts(this.value)">
-                            <option value="7days">{{ __('messages.last_7_days') }}</option>
-                            <option value="30days">{{ __('messages.last_30_days') }}</option>
-                            <option value="year">{{ __('messages.this_year') }}</option>
+                            <option value="7days"><?php echo e(__('messages.last_7_days')); ?></option>
+                            <option value="30days"><?php echo e(__('messages.last_30_days')); ?></option>
+                            <option value="year"><?php echo e(__('messages.this_year')); ?></option>
                         </select>
                     </div>
                 </div>
@@ -215,15 +224,15 @@
         <div class="col-lg-5">
             <div class="card h-100">
                 <div class="card-header pb-0 p-3">
-                    <h6 class="mb-0">{{ __('messages.distribution') }}</h6>
+                    <h6 class="mb-0"><?php echo e(__('messages.distribution')); ?></h6>
                 </div>
                 <div class="card-body p-3">
                     <div class="mb-4">
-                        <h6 class="text-sm">{{ __('messages.cards_by_type') }}</h6>
+                        <h6 class="text-sm"><?php echo e(__('messages.cards_by_type')); ?></h6>
                         <div class="chart-box" style="position:relative;height:220px;width:100%;"><canvas id="cardsByTypeChart"></canvas></div>
                     </div>
                     <div>
-                        <h6 class="text-sm">{{ __('messages.transactions_by_type') }}</h6>
+                        <h6 class="text-sm"><?php echo e(__('messages.transactions_by_type')); ?></h6>
                         <div class="chart-box" style="position:relative;height:220px;width:100%;"><canvas id="transactionsByTypeChart"></canvas></div>
                     </div>
                 </div>
@@ -237,9 +246,10 @@
             <div class="card">
                 <div class="card-header pb-0 p-3">
                     <div class="d-flex justify-content-between">
-                        <h6 class="mb-0">{{ __('messages.recent_transactions') }}</h6>
-                        <a href="{{ route('admin.transactions.index') }}" class="btn btn-sm btn-outline-primary">
-                            {{ __('messages.view_all') }}
+                        <h6 class="mb-0"><?php echo e(__('messages.recent_transactions')); ?></h6>
+                        <a href="<?php echo e(route('admin.transactions.index')); ?>" class="btn btn-sm btn-outline-primary">
+                            <?php echo e(__('messages.view_all')); ?>
+
                         </a>
                     </div>
                 </div>
@@ -249,76 +259,85 @@
                             <thead>
                                 <tr>
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
-                                        {{ __('messages.transaction') }}
+                                        <?php echo e(__('messages.transaction')); ?>
+
                                     </th>
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                        {{ __('messages.user') }}
+                                        <?php echo e(__('messages.user')); ?>
+
                                     </th>
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                        {{ __('messages.type') }}
+                                        <?php echo e(__('messages.type')); ?>
+
                                     </th>
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                        {{ __('messages.amount') }}
+                                        <?php echo e(__('messages.amount')); ?>
+
                                     </th>
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                        {{ __('messages.status') }}
+                                        <?php echo e(__('messages.status')); ?>
+
                                     </th>
                                     <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
-                                        {{ __('messages.date') }}
+                                        <?php echo e(__('messages.date')); ?>
+
                                     </th>
                                     <th></th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @forelse($recentTransactions as $transaction)
+                                <?php $__empty_1 = true; $__currentLoopData = $recentTransactions; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $transaction): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
                                 <tr>
                                     <td>
                                         <div class="d-flex px-2 py-1">
                                             <div class="d-flex flex-column justify-content-center">
-                                                <h6 class="mb-0 text-sm">{{ $transaction->transaction_id }}</h6>
-                                                <p class="text-xs text-secondary mb-0">{{ Str::limit($transaction->description, 30) }}</p>
+                                                <h6 class="mb-0 text-sm"><?php echo e($transaction->transaction_id); ?></h6>
+                                                <p class="text-xs text-secondary mb-0"><?php echo e(Str::limit($transaction->description, 30)); ?></p>
                                             </div>
                                         </div>
                                     </td>
                                     <td>
-                                        <p class="text-xs font-weight-bold mb-0">{{ $transaction->user->name }}</p>
-                                        <p class="text-xs text-secondary mb-0">{{ $transaction->user->email }}</p>
+                                        <p class="text-xs font-weight-bold mb-0"><?php echo e($transaction->user->name); ?></p>
+                                        <p class="text-xs text-secondary mb-0"><?php echo e($transaction->user->email); ?></p>
                                     </td>
                                     <td>
-                                        <span class="badge badge-sm bg-gradient-{{ $transaction->type == 'credit' ? 'success' : 'warning' }}">
-                                            {{ ucfirst($transaction->type) }}
+                                        <span class="badge badge-sm bg-gradient-<?php echo e($transaction->type == 'credit' ? 'success' : 'warning'); ?>">
+                                            <?php echo e(ucfirst($transaction->type)); ?>
+
                                         </span>
                                     </td>
                                     <td>
-                                        <p class="text-xs font-weight-bold mb-0">${{ number_format($transaction->amount, 2) }}</p>
+                                        <p class="text-xs font-weight-bold mb-0">$<?php echo e(number_format($transaction->amount, 2)); ?></p>
                                     </td>
                                     <td>
-                                        <span class="badge badge-sm bg-gradient-{{ $transaction->status == 'completed' ? 'success' : ($transaction->status == 'pending' ? 'warning' : 'danger') }}">
-                                            {{ ucfirst($transaction->status) }}
+                                        <span class="badge badge-sm bg-gradient-<?php echo e($transaction->status == 'completed' ? 'success' : ($transaction->status == 'pending' ? 'warning' : 'danger')); ?>">
+                                            <?php echo e(ucfirst($transaction->status)); ?>
+
                                         </span>
                                     </td>
                                     <td>
                                         <span class="text-secondary text-xs font-weight-bold">
-                                            {{ $transaction->created_at->diffForHumans() }}
+                                            <?php echo e($transaction->created_at->diffForHumans()); ?>
+
                                         </span>
                                     </td>
                                     <td class="align-middle">
-                                        <a href="{{ route('admin.transactions.show', $transaction) }}"
+                                        <a href="<?php echo e(route('admin.transactions.show', $transaction)); ?>"
                                            class="text-secondary font-weight-bold text-xs"
                                            data-toggle="tooltip"
-                                           title="{{ __('messages.view_details') }}">
+                                           title="<?php echo e(__('messages.view_details')); ?>">
                                             <i class="material-icons text-sm">visibility</i>
                                         </a>
                                     </td>
                                 </tr>
-                                @empty
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                                 <tr>
                                     <td colspan="7" class="text-center py-4">
                                         <i class="material-icons text-muted" style="font-size: 48px;">inbox</i>
-                                        <p class="text-muted">{{ __('messages.no_transactions_found') }}</p>
+                                        <p class="text-muted"><?php echo e(__('messages.no_transactions_found')); ?></p>
                                     </td>
                                 </tr>
-                                @endforelse
+                                <?php endif; ?>
                             </tbody>
                         </table>
                     </div>
@@ -328,12 +347,12 @@
     </div>
 </div>
 
-@push('scripts')
+<?php $__env->startPush('scripts'); ?>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
 // Transaction Trends Chart handled by updateCharts()
 // Cards by Type Chart
-const cardsData = @json($cardsByType);
+const cardsData = <?php echo json_encode($cardsByType, 15, 512) ?>;
 const cardsCtx = document.getElementById('cardsByTypeChart').getContext('2d');
 new Chart(cardsCtx, {
     type: 'doughnut',
@@ -353,7 +372,7 @@ new Chart(cardsCtx, {
 
 
 // Transactions by Type Chart (rename labels only - no bucketing, no totals change)
-const transData = @json($transactionsByType);
+const transData = <?php echo json_encode($transactionsByType, 15, 512) ?>;
 const labelMap = (t) => {
   const s = (t || '').toString().toLowerCase().trim();
   if (s.includes('transfer') || s.includes('تحويل') || s.includes('friend')) return 'تحويل لصديق';
@@ -375,7 +394,7 @@ function refreshDashboard() {
 }
 
 function updateCharts(period) {
-    fetch(`{{ route('admin.analytics') }}?period=${period}`, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+    fetch(`<?php echo e(route('admin.analytics')); ?>?period=${period}`, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
       .then(r => r.json())
       .then(json => {
         const bins = json.amount_bins;
@@ -406,7 +425,7 @@ function updateCharts(period) {
             plugins: {
               legend: { position: 'top' },
               tooltip: { callbacks: { label: (ctx) => `${ctx.dataset.label}: ${new Intl.NumberFormat('ar-EG').format(ctx.parsed.x || 0)}` } },
-              title: { display: true, text: '{{ __('messages.transactions') }} - توزيع المبالغ حسب فئات 1000+' }
+              title: { display: true, text: '<?php echo e(__('messages.transactions')); ?> - توزيع المبالغ حسب فئات 1000+' }
             },
             scales: {
               x: { beginAtZero: true, stacked: true, ticks: { callback: (v) => new Intl.NumberFormat('ar-EG').format(v) } },
@@ -424,5 +443,7 @@ document.addEventListener('DOMContentLoaded', function(){
 });
 </script>
 
-@endpush
-@endsection
+<?php $__env->stopPush(); ?>
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\xampp\htdocs\bank-graduation-project-main\resources\views/admin/dashboard.blade.php ENDPATH**/ ?>

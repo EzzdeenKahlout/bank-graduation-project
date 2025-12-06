@@ -157,14 +157,14 @@ Route::middleware(['auth', 'role:super_admin,admin'])->prefix('admin')->name('ad
     
     // Roles Management
     Route::prefix('roles')->name('roles.')->group(function () {
-        Route::get('/', [\App\Http\Controllers\Admin\RoleController::class, 'index'])->middleware('permission:manage_roles')->name('index');
+        Route::get('/', [RoleController::class, 'index'])->middleware('permission:manage_roles')->name('index');
         Route::get('/create', [\App\Http\Controllers\Admin\RoleController::class, 'create'])->middleware('permission:manage_roles')->name('create');
         Route::post('/', [\App\Http\Controllers\Admin\RoleController::class, 'store'])->middleware('permission:manage_roles')->name('store');
         Route::get('/{role}/edit', [\App\Http\Controllers\Admin\RoleController::class, 'edit'])->middleware('permission:manage_roles')->name('edit');
         Route::put('/{role}', [\App\Http\Controllers\Admin\RoleController::class, 'update'])->middleware('permission:manage_roles')->name('update');
         Route::delete('/{role}', [\App\Http\Controllers\Admin\RoleController::class, 'destroy'])->middleware('permission:manage_roles')->name('destroy');
     });
-Route::prefix('permissions')->name('permissions.')->group(function () {
+    Route::prefix('permissions')->name('permissions.')->group(function () {
         Route::get('/', [PermissionsManagementController::class, 'index'])->name('index');
         Route::get('/create', [PermissionsManagementController::class, 'create'])->name('create');
         Route::post('/', [PermissionsManagementController::class, 'store'])->name('store');

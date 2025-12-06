@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\Card;
 use App\Models\Transaction;
 use App\Models\Permission;
+use App\Models\Role;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
@@ -21,6 +22,7 @@ class AdminDashboardController extends Controller
         // Get statistics
         $stats = [
             'total_users' => User::count(),
+            'total_roles' => Role::count(),
             'active_users' => User::where('is_active', true)->count(),
             'total_cards' => Card::count(),
             'active_cards' => Card::where('status', 'active')->count(),
@@ -32,7 +34,7 @@ class AdminDashboardController extends Controller
                 ->sum('amount'),
         ];
 
-        // Recent transactions
+        // Recent transactions المعاملات الأخيرة
         $recentTransactions = Transaction::with(['user', 'card'])
             ->latest()
             ->take(10)
@@ -51,10 +53,22 @@ class AdminDashboardController extends Controller
             ->groupBy('card_type')
             ->get();
 
-        // Transaction by type
+        
+// Transaction by type
         $transactionsByType = Transaction::where('status', 'completed')
-            ->select('transaction_type as type', DB::raw('count(*) as count'), DB::raw('sum(amount) as total'))
-            ->groupBy('transaction_type')
+            ->select(DB::raw("
+                CASE
+                    WHEN transaction_type IN ('transfer') THEN 'تحويل لصديق'
+                    WHEN transaction_type IN ('payment') THEN 'دفع لتاجر'
+                    WHEN (transaction_type IS NULL OR transaction_type = '') AND payment_method = 'transfer' THEN 'تحويل لصديق'
+                    WHEN (transaction_type IS NULL OR transaction_type = '') AND payment_method = 'card' THEN 'دفع لتاجر'
+                    WHEN (transaction_type IS NULL OR transaction_type = '') AND receiver_id IS NOT NULL THEN 'تحويل لصديق'
+                    WHEN (transaction_type IS NULL OR transaction_type = '') AND merchant_name IS NOT NULL THEN 'دفع لتاجر'
+                    ELSE 'غير محدد'
+                END as type"),
+                DB::raw('COUNT(*) as count'),
+                DB::raw('SUM(amount) as total'))
+            ->groupBy('type')
             ->get();
 
         return view('admin.dashboard', compact(
@@ -81,6 +95,24 @@ class AdminDashboardController extends Controller
             default => $this->getWeekAnalytics(),
         };
 
+        // Add binned amounts for the period
+        $now = Carbon::now();
+        switch ($period) {
+            case 'today':
+                $bins = $this->buildAmountBins($now->copy()->startOfDay(), $now->copy()->endOfDay(), 'day');
+                break;
+            case '7days':
+            default:
+                $bins = $this->buildAmountBins($now->copy()->subDays(6)->startOfDay(), $now->copy()->endOfDay(), 'day');
+                break;
+            case '30days':
+                $bins = $this->buildAmountBins($now->copy()->subDays(29)->startOfDay(), $now->copy()->endOfDay(), 'day');
+                break;
+            case 'year':
+                $bins = $this->buildAmountBins($now->copy()->startOfYear(), $now->copy()->endOfYear(), 'month');
+                break;
+        }
+        $data['amount_bins'] = $bins;
         return response()->json($data);
     }
 
@@ -206,7 +238,82 @@ class AdminDashboardController extends Controller
         return ['status' => 'healthy', 'message' => 'Queue is running'];
     }
 
-    private function formatBytes($bytes)
+    
+    /**
+     * Build dynamic amount bins (>=1000 step) and aggregate sums per day/month/year
+     */
+    private function buildAmountBins(Carbon $start, Carbon $end, string $granularity = 'day')
+    {
+        // Fetch required transactions in range
+        $rows = Transaction::whereBetween('created_at', [$start->copy()->startOfDay(), $end->copy()->endOfDay()])
+            ->select(['amount', 'created_at'])
+            ->get();
+
+        $maxAmount = max(10000, (int) ceil(($rows->max('amount') ?? 0) / 1000) * 1000);
+        $step = 1000;
+
+        // Build bin labels like "0-999", "1000-1999", ...
+        $bins = [];
+        for ($a = 0; $a < $maxAmount; $a += $step) {
+            $bins[] = [$a, $a + $step - 1];
+        }
+        // Add an overflow bin for amounts >= maxAmount
+        $bins[] = [$maxAmount, null]; // null = infinity
+
+        $binLabels = array_map(function ($b) {
+            return is_null($b[1]) ? ($b[0] . '+') : ($b[0] . '-' . $b[1]);
+        }, $bins);
+
+        // Build time labels
+        $labels = [];
+        $cursor = $start->copy();
+        while ($cursor->lte($end)) {
+            if ($granularity === 'year') {
+                $labels[] = $cursor->format('Y');
+                $cursor->addYear();
+            } elseif ($granularity === 'month') {
+                $labels[] = $cursor->format('Y-m');
+                $cursor->addMonth();
+            } else { // day
+                $labels[] = $cursor->format('Y-m-d');
+                $cursor->addDay();
+            }
+        }
+
+        // Initialize matrix [bin][time] = 0
+        $series = array_fill(0, count($bins), array_fill(0, count($labels), 0));
+
+        // Helper to pick label index
+        $labelIndex = function ($dt) use ($granularity, $labels) {
+            $key = $granularity === 'year' ? $dt->format('Y')
+                 : ($granularity === 'month' ? $dt->format('Y-m') : $dt->format('Y-m-d'));
+            return array_search($key, $labels, true);
+        };
+
+        foreach ($rows as $r) {
+            $dt = Carbon::parse($r->created_at);
+            $li = $labelIndex($dt);
+            if ($li === false) continue;
+
+            $amt = (int) round($r->amount);
+            $bi = count($bins)-1; // default overflow
+            foreach ($bins as $i => $b) {
+                if (is_null($b[1])) { // overflow
+                    if ($amt >= $b[0]) { $bi = $i; break; }
+                } else {
+                    if ($amt >= $b[0] && $amt <= $b[1]) { $bi = $i; break; }
+                }
+            }
+            $series[$bi][$li] += $amt;
+        }
+
+        return [
+            'labels' => $labels,
+            'binLabels' => $binLabels,
+            'series' => $series,
+        ];
+    }
+private function formatBytes($bytes)
     {
         $units = ['B', 'KB', 'MB', 'GB', 'TB'];
         $bytes = max($bytes, 0);

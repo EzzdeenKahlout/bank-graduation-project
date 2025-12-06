@@ -5,7 +5,7 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title', 'البنك الرقمي')</title>
+    <title>@yield('title',  __('messages.dashboard'))</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -159,15 +159,39 @@
             width: 24px;
             height: 24px;
         }
-    </style>
+    
+/* --- Center Popup for payment success / failure --- */
+.popup-overlay{position:fixed;inset:0;background:rgba(0,0,0,.35);display:none;align-items:center;justify-content:center;z-index:9999}
+.popup-card{background:#fff;border-radius:16px;min-width:280px;max-width:420px;padding:20px 18px;box-shadow:0 20px 60px rgba(0,0,0,.25);text-align:center;direction:rtl}
+.popup-card .icon{width:46px;height:46px;margin:0 auto 10px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+.popup-card.success .icon{background:#e6f7ec;color:#16a34a}
+.popup-card.error .icon{background:#fdecea;color:#dc2626}
+.popup-card h4{margin:6px 0 8px;font-size:18px}
+.popup-card p{margin:0 0 12px;color:#555;font-size:14px}
+.popup-actions{display:flex;gap:8px;justify-content:center;margin-top:6px}
+.popup-btn{padding:8px 14px;border-radius:999px;border:0;cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,.12)}
+.popup-btn.primary{background:#6366f1;color:#fff}
+.popup-btn.ghost{background:#f3f4f6;color:#111827}
+@media (max-width:480px){.popup-card{margin:0 16px}}
+</style>
 </head>
 <body>
+<div id="globalPopupOverlay" class="popup-overlay" role="dialog" aria-modal="true" aria-hidden="true">
+  <div id="globalPopupCard" class="popup-card" tabindex="-1">
+    <div class="icon"></div>
+    <h4 id="popupTitle"></h4>
+    <p id="popupMsg"></p>
+    <div class="popup-actions">
+      <button id="popupOk" class="popup-btn primary">حسنًا</button>
+    </div>
+  </div>
+</div>
     <nav class="navbar">
         <h2>
             <svg class="icon-lg" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/>
             </svg>
-            البنك الرقمي
+            {{ __('messages.Digital_Bank') }}
         </h2>
         <div class="nav-links">
             <!-- Language Dropdown -->
@@ -290,6 +314,52 @@
             }
         }
     </script>
+
+<script>
+(function(){
+  function showPopup(type, title, msg){
+    var overlay = document.getElementById('globalPopupOverlay');
+    var card = document.getElementById('globalPopupCard');
+    var icon = card.querySelector('.icon');
+    var t = document.getElementById('popupTitle');
+    var m = document.getElementById('popupMsg');
+    card.classList.remove('success','error');
+    card.classList.add(type || 'success');
+    icon.innerHTML = type==='error'
+      ? '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="24" height="24"><path d="M12 2a10 10 0 1010 10A10.012 10.012 0 0012 2zm1 14h-2v-2h2zm0-4h-2V7h2z"/></svg>'
+      : '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="24" height="24"><path d="M12 2a10 10 0 1010 10A10.012 10.012 0 0012 2zm-1 15l-4-4 1.41-1.41L11 13.17l5.59-5.59L18 9z"/></svg>';
+    t.textContent = title || (type==='error' ? 'فشلت العملية' : 'تمت العملية بنجاح');
+    m.textContent = msg || '';
+    overlay.style.display = 'flex';
+    overlay.setAttribute('aria-hidden','false');
+    card.focus();
+    // close helpers
+    function close(){ overlay.style.display='none'; overlay.setAttribute('aria-hidden','true'); }
+    document.getElementById('popupOk').onclick = close;
+    overlay.onclick = function(e){ if(e.target===overlay) close(); };
+    document.addEventListener('keydown', function esc(e){ if(e.key==='Escape'){ close(); document.removeEventListener('keydown', esc);} });
+    setTimeout(close, 3500); // auto close
+  }
+
+  // Pull flash messages from Laravel
+  var popupType = null, popupMsg = null;
+  try {
+    popupType = {!! session('success') ? "'success'" : (session('error') || $errors->any() ? "'error'" : "null") !!};
+    popupMsg = {!! json_encode(session('success') ?? session('error') ?? ($errors->first() ?? null), JSON_UNESCAPED_UNICODE) !!};
+  } catch(e){}
+
+  if (popupType && popupMsg) {
+    window.addEventListener('DOMContentLoaded', function(){
+      showPopup(popupType, null, popupMsg);
+    });
+  }
+
+  // expose for manual use
+  window.showPopup = showPopup;
+})();
+</script>
+
+@stack('scripts')
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

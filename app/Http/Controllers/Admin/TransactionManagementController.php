@@ -26,7 +26,7 @@ class TransactionManagementController extends Controller
         if ($request->has('search')) {
             $search = $request->search;
             $query->where(function($q) use ($search) {
-                $q->where('transaction_id', 'like', "%{$search}%")
+                $q->where('id', 'like', "%{$search}%")
                   ->orWhere('description', 'like', "%{$search}%")
                   ->orWhereHas('user', function($uq) use ($search) {
                       $uq->where('name', 'like', "%{$search}%")
@@ -37,7 +37,7 @@ class TransactionManagementController extends Controller
 
         // Filter by type
         if ($request->has('type') && $request->type != '') {
-            $query->where('type', $request->type);
+            $query->where('transaction_type', $request->type);
         }
 
         // Filter by status

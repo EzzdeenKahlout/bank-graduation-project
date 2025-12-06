@@ -16,6 +16,13 @@
         width: 48px;
         height: 48px;
     }
+
+/* --- Tooltip for quick actions (hover-only) --- */
+.quick-ops .btn.btn-primary.qa-item { position: relative; }
+.quick-ops .info-icon { position: absolute; top: 8px; left: 8px; width: 18px; height: 18px; opacity: .95; cursor: pointer; pointer-events: auto; }
+.quick-ops .info-icon svg { width: 16px; height: 16px; display: block; }
+.quick-ops .tooltip-bubble { position: absolute; left: 8px; top: -10px; transform: translateY(-100%); background: rgba(0,0,0,0.9); color: #fff; padding: 6px 10px; border-radius: 8px; font-size: 12px; white-space: nowrap; display: none; z-index: 20; }
+.quick-ops .quick-ops .tooltip-bubble::after { content: ""; position: absolute; bottom: -6px; right: 12px; border: 6px solid transparent; border-top-color: rgba(0,0,0,0.9); }
 </style>
 
 <h1 class="welcome-header">
@@ -44,7 +51,7 @@
             <svg class="icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/>
             </svg>
-            الإحصائيات
+            {{ __('messages.Statistics') }}
         </h3>
         <div style="display: grid; gap: 1rem;">
             <div style="display: flex; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid #e0e0e0;">
@@ -52,11 +59,11 @@
                 <strong style="color: #667eea;">{{ $stats['total_transactions'] }}</strong>
             </div>
             <div style="display: flex; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid #e0e0e0;">
-                <span>إجمالي المصروفات:</span>
+                <span>{{ __('messages.Total_expenses') }}</span>
                 <strong style="color: #dc3545;">{{ __('messages.currency_symbol') }}{{ number_format($stats['total_spent'], 2) }}</strong>
             </div>
             <div style="display: flex; justify-content: space-between; padding: 0.5rem 0;">
-                <span>إجمالي ال{{ __('messages.received') }}:</span>
+                <span>{{ __('messages.Total_received') }}:</span>
                 <strong style="color: #28a745;">{{ __('messages.currency_symbol') }}{{ number_format($stats['total_received'], 2) }}</strong>
             </div>
         </div>
@@ -78,7 +85,7 @@
                 <div style="background: #667eea; height: 100%; width: {{ ($user->daily_spent / $user->daily_limit) * 100 }}%;"></div>
             </div>
             <div style="text-align: center; margin-top: 0.5rem; color: #666; font-size: 0.9rem;">
-                المتبقي: {{ __('messages.currency_symbol') }}{{ number_format($user->daily_limit - $user->daily_spent, 2) }}
+                {{__('messages.residual')}}: {{ __('messages.currency_symbol') }}{{ number_format($user->daily_limit - $user->daily_spent, 2) }}
             </div>
         </div>
     </div>
@@ -89,26 +96,50 @@
         <svg class="icon-lg" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
         </svg>
-        عمليات سريعة
+        {{ __('messages.Quick_operations') }}
     </h2>
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
-        <a href="{{ route('transfer.friend') }}" class="btn btn-primary" style="padding: 1.5rem; text-align: center;">
+    <div class="quick-ops" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+        <a href="{{ route('transfer.friend') }}" class="btn btn-primary qa-item" style="position: relative; padding: 1.5rem; text-align: center;">
             <svg class="icon-lg" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"/>
             </svg>
             <div>{{ __('messages.transfer_to_friend') }}</div>
+<span class="info-icon" title="معلومات">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#fff">
+  <circle cx="12" cy="12" r="11" fill="#6366f1"></circle>
+  <path d="M12 17a1 1 0 110-2 1 1 0 010 2zm1-4h-2V7h2v6z" fill="#fff"></path>
+</svg>
+</span><div class="tooltip-bubble">استعرض وأدر بطاقاتك وإداراتها</div>
+<span class="info-icon" title="معلومات">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#fff">
+  <circle cx="12" cy="12" r="11" fill="#6366f1"></circle>
+  <path d="M12 17a1 1 0 110-2 1 1 0 010 2zm1-4h-2V7h2v6z" fill="#fff"></path>
+</svg>
+</span><div class="tooltip-bubble">ادفع للتاجر عبر المسح أو إدخال رقم التاجر</div>
+<span class="info-icon" title="معلومات">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#fff">
+  <circle cx="12" cy="12" r="11" fill="#6366f1"></circle>
+  <path d="M12 17a1 1 0 110-2 1 1 0 010 2zm1-4h-2V7h2v6z" fill="#fff"></path>
+</svg>
+</span><div class="tooltip-bubble">حوّل الأموال إلى صديق بسرعة وبأمان</div>
         </a>
-        <a href="{{ route('pay.merchant') }}" class="btn btn-primary" style="padding: 1.5rem; text-align: center;">
+        <a href="{{ route('pay.merchant') }}" class="btn btn-primary qa-item" style="position: relative; padding: 1.5rem; text-align: center;">
             <svg class="icon-lg" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
             </svg>
             <div>{{ __('messages.pay_merchant') }}</div>
+
+<span class="info-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#fff"><circle cx="12" cy="12" r="11" fill="#6366f1"></circle><path d="M12 17a1 1 0 110-2 1 1 0 010 2zm1-4h-2V7h2v6z" fill="#fff"></path></svg></span>
+<div class="tooltip-bubble">ادفع للتاجر عبر المسح أو إدخال رقم التاجر</div>
         </a>
-        <a href="{{ route('cards.index') }}" class="btn btn-primary" style="padding: 1.5rem; text-align: center;">
+        <a href="{{ route('cards.index') }}" class="btn btn-primary qa-item" style="position: relative; padding: 1.5rem; text-align: center;">
             <svg class="icon-lg" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/>
             </svg>
             <div>{{ __('messages.my_cards') }}</div>
+
+<span class="info-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#fff"><circle cx="12" cy="12" r="11" fill="#6366f1"></circle><path d="M12 17a1 1 0 110-2 1 1 0 010 2zm1-4h-2V7h2v6z" fill="#fff"></path></svg></span>
+<div class="tooltip-bubble">استعرض بطاقاتك وإدارتها</div>
         </a>
         <a href="{{ route('settings.index') }}" class="btn btn-primary" style="padding: 1.5rem; text-align: center;">
             <svg class="icon-lg" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -125,7 +156,7 @@
         <svg class="icon-lg" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
         </svg>
-        آخر {{ __('messages.transactions') }}
+        {{ __('messages.last') }} {{ __('messages.transactions') }}
     </h3>
     @forelse($recentTransactions as $transaction)
         <div style="display: flex; justify-content: space-between; align-items: center; padding: 1rem; background: #f8f9fa; border-radius: 8px; margin-bottom: 0.5rem;">
@@ -133,12 +164,12 @@
                 <strong>
                     @if($transaction->transaction_type == 'transfer')
                         @if($transaction->sender_id == $user->id)
-                            {{ __('messages.transfer') }} إلى {{ $transaction->receiver->name }}
+                            {{ __('messages.transfer') }} {{__('messages.to')}} {{ $transaction->receiver->name }}
                         @else
-                            {{ __('messages.transfer') }} من {{ $transaction->sender->name }}
+                            {{ __('messages.transfer') }} {{__('messages.from')}} {{ $transaction->sender->name }}
                         @endif
                     @elseif($transaction->transaction_type == 'payment')
-                        {{ __('messages.payment') }} لـ {{ $transaction->merchant_name }}
+                        {{ __('messages.payment') }} {{__('messages.to')}} {{ $transaction->merchant_name }}
                     @endif
                 </strong>
                 <div style="font-size: 0.9rem; color: #666; margin-top: 0.3rem;">
@@ -150,7 +181,7 @@
             </div>
         </div>
     @empty
-        <p style="text-align: center; padding: 2rem; color: #666;">{{ __('messages.no_transactions') }} بعد</p>
+        <p style="text-align: center; padding: 2rem; color: #666;">{{ __('messages.no_transactions') }} </p>
     @endforelse
 
     @if($recentTransactions->count() > 0)
@@ -160,9 +191,15 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
                 </svg>
-                عرض جميع {{ __('messages.transactions') }}
+                  {{ __('messages.View_all') }} {{ __('messages.transactions') }}
             </a>
         </div>
     @endif>
 </div>
+
+
+
 @endsection
+<style>
+.quick-ops .info-icon:hover + .tooltip-bubble { display: block; }
+</style>

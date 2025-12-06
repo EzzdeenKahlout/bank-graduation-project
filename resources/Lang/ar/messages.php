@@ -8,6 +8,14 @@ return [
     'logout' => 'تسجيل الخروج',
     'login' => 'تسجيل الدخول',
     'register' => 'تسجيل جديد',
+    'Digital_Bank' => 'البنك الرقمي',
+    'Total_expenses'=>'إجمالي المصروفات',
+    'Total_received' => 'إجمالي المستلم',
+    'Statistics' => 'الإحصائيات',
+    'Quick_operations' => 'العمليات السريعة',
+    'residual' => 'المتبقي',
+    'to' => 'الى',
+    'View_all' => 'عرض الكل',
     'welcome_user' => 'مرحباً، :name',
     'current_balance' => 'رصيدك الحالي',
     'language' => 'اللغة',
@@ -65,6 +73,8 @@ return [
 
     // لوحة التحكم - Dashboard
     'account_overview' => 'نظرة عامة على الحساب',
+    'last'=>'آخر',
+    'total_roles' => 'إجمالي الأدوار',
     'available_balance' => 'الرصيد المتاح',
     'total_transactions' => 'إجمالي المعاملات',
     'active_cards' => 'البطاقات النشطة',
